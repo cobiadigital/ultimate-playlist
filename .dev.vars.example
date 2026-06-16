@@ -1,0 +1,10 @@
+# Local dev secrets for `wrangler dev`. Copy to `.dev.vars` (which is gitignored) and fill in.
+# Create a Spotify app at https://developer.spotify.com/dashboard and register the redirect URI
+# http://127.0.0.1:8787/auth/callback (Spotify requires the 127.0.0.1 loopback IP, not "localhost").
+#
+# The hosted names SPOTIFY_CLIENT / SPOTIFY_SECRET are also accepted in place of the *_ID/*_SECRET forms.
+SPOTIFY_CLIENT_ID=your_client_id
+SPOTIFY_CLIENT_SECRET=your_client_secret
+
+# Long random string used to encrypt the session cookie.
+SESSION_SECRET=change_me_to_a_long_random_string
