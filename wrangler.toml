@@ -3,9 +3,10 @@ main = "src/index.ts"
 compatibility_date = "2026-06-01"
 
 # Non-secret config. SPOTIFY_REDIRECT_URI must EXACTLY match a Redirect URI registered
-# on your Spotify app. For production set this to your deployed Worker URL + /auth/callback.
+# on your Spotify app. This is the deployed (production) callback; for local `wrangler dev`
+# override it in .dev.vars with http://127.0.0.1:8787/auth/callback.
 [vars]
-SPOTIFY_REDIRECT_URI = "http://127.0.0.1:8787/auth/callback"
+SPOTIFY_REDIRECT_URI = "https://ultimate-playlist.cobiadigital.workers.dev/auth/callback"
 
 # Secrets (set in the Cloudflare dashboard for git-deployed Workers, or via
 # `wrangler secret put <NAME>` for manual deploys; use .dev.vars for `wrangler dev`):
