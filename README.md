@@ -19,14 +19,15 @@ The canonical model is the seam for future services (Apple Music, YouTube Music,
 
 ## HTTP API
 
-| Method | Path | Purpose |
-|--------|------|---------|
-| GET | `/health` | Liveness check |
-| GET | `/auth/login` | Begin Spotify OAuth (redirects to Spotify) |
-| GET | `/auth/callback` | OAuth redirect target; sets the session cookie |
-| GET | `/auth/status` | `{ authenticated: boolean }` |
-| GET | `/api/playlists/:id/export` | Returns a `CanonicalPlaylist` |
-| POST | `/api/playlists/import` | Body: `CanonicalPlaylist`; creates a Spotify playlist |
+| Method | Path                        | Purpose                                               |
+| ------ | --------------------------- | ----------------------------------------------------- |
+| GET    | `/`                         | Minimal web UI (connect, export, import)              |
+| GET    | `/health`                   | Liveness check                                        |
+| GET    | `/auth/login`               | Begin Spotify OAuth (redirects to Spotify)            |
+| GET    | `/auth/callback`            | OAuth redirect target; sets the session cookie        |
+| GET    | `/auth/status`              | `{ authenticated: boolean }`                          |
+| GET    | `/api/playlists/:id/export` | Returns a `CanonicalPlaylist`                         |
+| POST   | `/api/playlists/import`     | Body: `CanonicalPlaylist`; creates a Spotify playlist |
 
 Per-user Spotify tokens are stored in an **encrypted (AES-GCM) httpOnly cookie**, so no
 server-side session store is required — a good fit for stateless Workers isolates.

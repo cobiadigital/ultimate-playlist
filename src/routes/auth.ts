@@ -33,7 +33,8 @@ authRouter.get('/callback', async (c) => {
 
   const tokens = await exchangeCodeForTokens(config, code);
   await setSession(c, tokens, config.sessionSecret);
-  return c.json({ status: 'authenticated' });
+  // Return the user to the UI rather than a bare JSON response.
+  return c.redirect('/?connected=1');
 });
 
 // Lightweight check the client can use to know whether to send the user through login.
