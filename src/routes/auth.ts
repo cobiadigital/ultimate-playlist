@@ -9,7 +9,7 @@ export const authRouter = new Hono<{ Bindings: Env }>();
 
 // Kick off the flow: remember a random state and redirect to Spotify's consent page.
 authRouter.get('/login', async (c) => {
-  const config = loadConfig(c.env);
+  const config = loadConfig(c.env, c.req.url);
   const bytes = crypto.getRandomValues(new Uint8Array(16));
   const state = [...bytes].map((b) => b.toString(16).padStart(2, '0')).join('');
   await setOAuthState(c, state, config.sessionSecret);
@@ -18,7 +18,7 @@ authRouter.get('/login', async (c) => {
 
 // Spotify redirects back here with `code` and `state`.
 authRouter.get('/callback', async (c) => {
-  const config = loadConfig(c.env);
+  const config = loadConfig(c.env, c.req.url);
   const code = c.req.query('code');
   const state = c.req.query('state');
   const error = c.req.query('error');

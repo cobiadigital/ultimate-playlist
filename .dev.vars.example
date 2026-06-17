@@ -9,5 +9,7 @@ SPOTIFY_CLIENT_SECRET=your_client_secret
 # Long random string used to encrypt the session cookie.
 SESSION_SECRET=change_me_to_a_long_random_string
 
-# Local dev overrides the production redirect URI from wrangler.toml.
+# Local dev overrides the production redirect URI from wrangler.toml. Optional: if omitted,
+# the app derives it from the request origin, which is http://127.0.0.1:8787/auth/callback
+# under `wrangler dev`. Keep it explicit to make the value you must register obvious.
 SPOTIFY_REDIRECT_URI=http://127.0.0.1:8787/auth/callback

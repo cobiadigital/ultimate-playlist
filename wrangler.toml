@@ -3,8 +3,10 @@ main = "src/index.ts"
 compatibility_date = "2026-06-01"
 
 # Non-secret config. SPOTIFY_REDIRECT_URI must EXACTLY match a Redirect URI registered
-# on your Spotify app. This is the deployed (production) callback; for local `wrangler dev`
-# override it in .dev.vars with http://127.0.0.1:8787/auth/callback.
+# on your Spotify app (including scheme and no trailing slash). This pins the deployed
+# (production) callback. If you remove it, the app derives the callback from the incoming
+# request origin (`${origin}/auth/callback`) instead — handy for *.workers.dev previews or
+# custom domains, but you must still register each host's callback URL in the Spotify app.
 [vars]
 SPOTIFY_REDIRECT_URI = "https://ultimate-playlist.cobiadigital.workers.dev/auth/callback"
 
