@@ -20,23 +20,30 @@ export class SpotifyApiError extends Error {
 }
 
 /**
- * Turns a failed Spotify response into an actionable message. A 403 on an otherwise valid
- * request almost always means the app is in Development Mode and the logged-in user has not
- * been added to its allowlist (Spotify's body says "the user may not be registered"), so we
- * spell out the fix rather than surfacing the bare status.
+ * Turns a failed Spotify response into an actionable message. Spotify reuses 403 for several
+ * distinct configuration problems, so we match on the body text to point at the specific fix
+ * rather than guessing.
  */
 function describeError(status: number, url: string, body: string): string {
   const base = `Spotify API ${status} for ${url}: ${body}`;
-  if (status === 403) {
-    return (
-      `${base}\n` +
-      'This usually means the Spotify app is in Development Mode and the signed-in user is ' +
-      'not on its allowlist. Add the user under Settings → User Management in the Spotify ' +
-      'dashboard (https://developer.spotify.com/dashboard), or request extended quota to ' +
-      'remove the allowlist limit.'
-    );
+  if (status !== 403) return base;
+
+  const lower = body.toLowerCase();
+  let hint: string;
+  if (lower.includes('premium')) {
+    // "Active premium subscription required for the owner of the app."
+    hint =
+      'The owner of the Spotify app (the developer/dashboard account that created it, not the ' +
+      'signed-in user) needs an active Spotify Premium subscription. After upgrading it can take ' +
+      'a few hours before requests are allowed again.';
+  } else {
+    // "...the user may not be registered."
+    hint =
+      'This usually means the Spotify app is in Development Mode and the signed-in user is not ' +
+      'on its allowlist. Add the user under Settings → User Management in the Spotify dashboard ' +
+      '(https://developer.spotify.com/dashboard), or request extended quota to remove the limit.';
   }
-  return base;
+  return `${base}\n${hint}`;
 }
 
 /**
