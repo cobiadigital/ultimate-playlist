@@ -20,6 +20,26 @@ export class SpotifyApiError extends Error {
 }
 
 /**
+ * Turns a failed Spotify response into an actionable message. A 403 on an otherwise valid
+ * request almost always means the app is in Development Mode and the logged-in user has not
+ * been added to its allowlist (Spotify's body says "the user may not be registered"), so we
+ * spell out the fix rather than surfacing the bare status.
+ */
+function describeError(status: number, url: string, body: string): string {
+  const base = `Spotify API ${status} for ${url}: ${body}`;
+  if (status === 403) {
+    return (
+      `${base}\n` +
+      'This usually means the Spotify app is in Development Mode and the signed-in user is ' +
+      'not on its allowlist. Add the user under Settings → User Management in the Spotify ' +
+      'dashboard (https://developer.spotify.com/dashboard), or request extended quota to ' +
+      'remove the allowlist limit.'
+    );
+  }
+  return base;
+}
+
+/**
  * Authenticated Spotify Web API client bound to a single user's token set.
  *
  * The client refreshes the access token transparently: proactively when it has
@@ -63,7 +83,7 @@ export class SpotifyClient {
 
     if (!res.ok) {
       const text = await res.text();
-      throw new SpotifyApiError(res.status, `Spotify API ${res.status} for ${url}: ${text}`);
+      throw new SpotifyApiError(res.status, describeError(res.status, url, text));
     }
 
     // 201/204 responses (e.g. add-tracks) may have no body.
